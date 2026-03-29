@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Quantum Measure</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body style="align-items: flex-start; padding-top: 100px;">
+    <nav class="navbar">
+        <div class="logo">Quantum Measure</div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <span id="userEmail" style="color: #94a3b8; font-size: 14px;"></span>
+            <a class="logout-link" onclick="logout()">Logout</a>
+        </div>
+    </nav>
+
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2" style="bottom: 50px; right: 50px;"></div>
+    </div>
+
+    <main class="dashboard-container">
+        <!-- Measurement Tool -->
+        <div class="card">
+            <h2 style="margin-bottom: 24px;">New Measurement</h2>
+            
+            <div class="category-tabs" id="categoryTabs">
+                <div class="tab active" data-category="Length">Length</div>
+                <div class="tab" data-category="Weight">Weight</div>
+                <div class="tab" data-category="Volume">Volume</div>
+                <div class="tab" data-category="Temperature">Temperature</div>
+            </div>
+
+            <form id="measureForm">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label>Value 1</label>
+                        <input type="number" id="val1" step="any" placeholder="0.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Unit 1</label>
+                        <select id="unit1" required></select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Operation</label>
+                    <select id="operation" required>
+                        <option value="2">Addition (+)</option>
+                        <option value="3">Subtraction (-)</option>
+                        <option value="4">Division (/)</option>
+                        <option value="1">Comparison (=)</option>
+                    </select>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label>Value 2</label>
+                        <input type="number" id="val2" step="any" placeholder="0.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Unit 2</label>
+                        <select id="unit2" required></select>
+                    </div>
+                </div>
+
+                <div class="form-group" id="targetUnitGroup">
+                    <label>Target Unit (Result Unit)</label>
+                    <select id="targetUnit"></select>
+                </div>
+
+                <button type="submit" id="calcBtn" class="btn">Process Measurement</button>
+            </form>
+
+            <div id="resultBox" style="margin-top: 32px; padding: 24px; border-radius: 16px; background: rgba(56, 189, 248, 0.1); border: 1px dashed var(--accent-color); display: none;">
+                <p style="font-size: 14px; color: #94a3b8; margin-bottom: 8px;">Result</p>
+                <h3 id="resultValue" style="color: var(--accent-color); font-size: 24px;">0.00</h3>
+            </div>
+        </div>
+
+        <!-- History -->
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h2>Recent History</h2>
+                <button onclick="loadHistory()" style="background: none; border: none; color: var(--accent-color); cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"></path></svg>
+                    Refresh
+                </button>
+            </div>
+            <div class="history-list" id="historyList">
+                <p style="text-align: center; color: #94a3b8; padding-top: 40px;">No history records yet.</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // Check auth on load
+        if (typeof checkAuth === 'function' && !checkAuth()) {
+            window.location.href = 'index.html';
+        }
+        document.getElementById('userEmail').innerText = localStorage.getItem('user_email') || 'Guest';
+    </script>
+</body>
+</html>
