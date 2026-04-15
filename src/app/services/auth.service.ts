@@ -7,7 +7,7 @@ import { LoginResponse } from '../models/api.models';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:5100/api/Auth';
+  private apiUrl = 'https://quantitymeasurementapp-yvwg.onrender.com';
 
   constructor(private http: HttpClient) { }
 
