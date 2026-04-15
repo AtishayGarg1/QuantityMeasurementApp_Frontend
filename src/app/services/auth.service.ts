@@ -13,8 +13,11 @@ export class AuthService {
 
   login(credentials: any): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
-      tap(response => {
-        localStorage.setItem('token', response.token);
+      tap((response: any) => {
+        const token = response.token || response.Token;
+        if (token) {
+          localStorage.setItem('token', token);
+        }
       })
     );
   }

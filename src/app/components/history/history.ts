@@ -24,12 +24,24 @@ export class HistoryComponent implements OnInit {
 
   loadHistory(): void {
     this.loading = true;
+    this.errorMessage = '';
     this.service.getHistory().subscribe({
-      next: (data: any[]) => {
-        // Log to verify casing if I could, but I'll map it common keys
+      next: (response: any) => {
+        // Handle potential wrapping in an object (e.g., { data: [...] } or { items: [...] })
+        let data: any[] = [];
+        if (Array.isArray(response)) {
+          data = response;
+        } else if (response && Array.isArray(response.data)) {
+          data = response.data;
+        } else if (response && Array.isArray(response.items)) {
+          data = response.items;
+        } else if (response && Array.isArray(response.history)) {
+          data = response.history;
+        }
+
         this.history = data.map(record => ({
             ...record,
-            id: record.id ?? record.Id, // Handle both casing
+            id: record.id ?? record.Id,
             measurementCategory: record.measurementCategory ?? record.MeasurementCategory,
             operationType: record.operationType ?? record.OperationType,
             measurementUnit1: record.measurementUnit1 ?? record.MeasurementUnit1,
@@ -48,7 +60,7 @@ export class HistoryComponent implements OnInit {
         if (err.status === 401) {
           this.errorMessage = 'Session expired or not logged in. Please log in again.';
         } else if (err.status === 0) {
-          this.errorMessage = 'Cannot reach the server. Is the backend running on port 5100?';
+          this.errorMessage = 'Cannot reach the server. Please check your internet connection.';
         } else {
           this.errorMessage = `Failed to load history (Error ${err.status}).`;
         }

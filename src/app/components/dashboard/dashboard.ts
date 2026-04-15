@@ -93,11 +93,15 @@ export class DashboardComponent implements OnInit {
       const call = isCompare ? this.service.compare(request) : this.service.calculate(request);
 
       call.subscribe({
-        next: (resp) => {
-          if (resp.isSuccess) {
-            this.result = resp;
+        next: (resp: any) => {
+          if (resp.isSuccess || resp.IsSuccess) {
+            this.result = {
+                ...resp,
+                calculatedValue: resp.calculatedValue ?? resp.CalculatedValue,
+                areEqual: resp.areEqual ?? resp.AreEqual
+            };
           } else {
-            this.errorMessage = resp.errorMessage || 'Unknown error occurred.';
+            this.errorMessage = resp.errorMessage || resp.ErrorMessage || 'Unknown error occurred.';
           }
           this.loading = false;
         },
