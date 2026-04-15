@@ -1,0 +1,98 @@
+<app-navbar></app-navbar>
+
+<div class="dashboard-container fade-in">
+  <div class="glass-hero">
+    <h1>Quality Measurement Dashboard</h1>
+    <p>Convert and Compare across multiple units with precision</p>
+  </div>
+
+  <div class="converter-box glass-card">
+    <form [formGroup]="measurementForm" (ngSubmit)="onSubmit()">
+      <div class="category-selector">
+        <div class="cat-chip" *ngFor="let cat of categories"
+          (click)="measurementForm.patchValue({measurementCategory: cat})"
+          [class.active]="measurementForm.get('measurementCategory')?.value === cat">
+          {{cat}}
+        </div>
+      </div>
+
+      <div class="operation-selector">
+        <label>
+          <input type="radio" formControlName="opType" value="calculate"> Calculate
+        </label>
+        <label>
+          <input type="radio" formControlName="opType" value="compare"> Comparison
+        </label>
+      </div>
+
+
+      <!-- Arithmetic Dropdown (Visible for Calculate) -->
+      <div class="input-group full-width" *ngIf="measurementForm.get('opType')?.value === 'calculate'">
+        <label>Specific Operation</label>
+        <select formControlName="arithmeticOp" class="op-select">
+          <option *ngFor="let op of arithmeticOps" [value]="op.value">{{op.label}}</option>
+        </select>
+      </div>
+
+      <div class="converter-grid">
+        <div class="input-group">
+          <label>First Value</label>
+          <input type="number" formControlName="measurementValue1" placeholder="0.00">
+        </div>
+
+        <div class="input-group">
+          <label>Unit 1</label>
+          <select formControlName="measurementUnit1" class="unit-select">
+            <option *ngFor="let unit of availableUnits" [value]="unit">{{unit}}</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label>Second Value</label>
+          <input type="number" formControlName="measurementValue2" placeholder="0.00">
+          <small *ngIf="measurementForm.get('opType')?.value === 'calculate'"
+            style="font-size: 10px; opacity: 0.6; color: var(--secondary)">Set to 0 for simple conversion</small>
+        </div>
+
+        <div class="input-group">
+          <label>Unit 2</label>
+          <select formControlName="measurementUnit2" class="unit-select">
+            <option *ngFor="let unit of availableUnits" [value]="unit">{{unit}}</option>
+          </select>
+        </div>
+
+        <!-- Target Unit (Only for conversion/arithmetic) -->
+        <div class="input-group full-width" *ngIf="measurementForm.get('opType')?.value !== 'compare'">
+          <label>Target Unit (Result Unit)</label>
+          <select formControlName="targetMeasurementUnit" class="unit-select target-select">
+            <option *ngFor="let unit of availableUnits" [value]="unit">{{unit}}</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="measurementForm.invalid || loading">
+        <span *ngIf="!loading">Process Measurement</span>
+        <span *ngIf="loading">Processing...</span>
+      </button>
+
+      <!-- RESULT -->
+      <div class="result-display fade-in" *ngIf="result">
+        <h3>Result</h3>
+        <div *ngIf="measurementForm.get('opType')?.value === 'calculate'">
+          <div class="result-number">{{result.calculatedValue}}</div>
+          <div class="result-unit" style="color: #fb7185">{{measurementForm.get('targetMeasurementUnit')?.value}}</div>
+        </div>
+        <div *ngIf="measurementForm.get('opType')?.value === 'compare'">
+          <div class="result-number" [style.color]="result.areEqual ? 'var(--success)' : 'var(--error)'">
+            {{result.areEqual ? 'MATCHED' : 'MISMATCHED'}}
+          </div>
+          <div class="result-unit">{{result.areEqual ? '✓' : '✗'}}</div>
+        </div>
+      </div>
+
+      <div class="error-message" *ngIf="errorMessage">
+        {{errorMessage}}
+      </div>
+    </form>
+  </div>
+</div>

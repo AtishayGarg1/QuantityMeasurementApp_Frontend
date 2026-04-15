@@ -1,0 +1,70 @@
+<app-navbar></app-navbar>
+
+<div class="history-container fade-in">
+  <div class="glass-hero">
+    <h1>Calculation History</h1>
+    <p>View and manage your past measurement operations</p>
+  </div>
+
+  <div class="history-card glass-card">
+    <div class="loading-state" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Loading history...</p>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && history.length === 0 && !errorMessage">
+      <p>No measurement records found.</p>
+    </div>
+
+    <div class="empty-state error-state" *ngIf="!loading && errorMessage">
+      <p>⚠️ {{ errorMessage }}</p>
+    </div>
+
+    <div class="table-container" *ngIf="!loading && history.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Operation</th>
+            <th>Result</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let record of history">
+            <td>
+              <div class="category-info">
+                <span class="type-badge">{{record.measurementCategory}}</span>
+              </div>
+            </td>
+            <td class="op-cell">
+              {{record.measurementValue1}} <span class="dim">{{record.measurementUnit1}}</span>
+              
+              <span class="op-symbol">{{ getOperationSymbol(record.operationType, record.isComparison) }}</span>
+
+              <span *ngIf="isArithmetic(record.operationType) || record.isComparison">
+                {{record.measurementValue2}} <span class="dim">{{record.measurementUnit2}}</span>
+              </span>
+
+              <span *ngIf="!record.isComparison && isArithmetic(record.operationType)" class="op-symbol">→</span>
+              <span *ngIf="!record.isComparison" class="dim">{{record.targetMeasurementUnit}}</span>
+            </td>
+            <td class="result-cell">
+                <span *ngIf="!record.isComparison">{{record.calculatedValue}} <span class="dim">{{record.targetMeasurementUnit}}</span></span>
+                <span *ngIf="record.isComparison" class="comparison-status" [class.success]="record.areEqual" [class.error]="!record.areEqual">
+                    {{record.areEqual ? 'MATCHED' : 'DIFFERENT'}}
+                </span>
+            </td>
+            <td class="date-cell">{{record.timestamp || record.createdAt | date:'MMM d, HH:mm'}}</td>
+            <td>
+              <button class="delete-btn" (click)="deleteRecord(record.id)">
+                <span>Delete</span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
