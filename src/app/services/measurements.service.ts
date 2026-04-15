@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class MeasurementsService {
-  private apiUrl = 'https://quantitymeasurementapp-yvwg.onrender.com/api';
+  private apiUrl = 'https://quantitymeasurementapp-yvwg.onrender.com/api/Measurements';
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
