@@ -36,8 +36,8 @@ export class DashboardComponent implements OnInit {
       measurementValue2: [0, Validators.required],
       measurementUnit2: ['', Validators.required],
       targetMeasurementUnit: ['', Validators.required],
-      opType: ['calculate'], // compare or calculate
-      arithmeticOp: [2] // Internal selection for calculate mode
+      opType: ['convert'], // convert, compare or arithmetic
+      arithmeticOp: [2] // Internal selection for arithmetic mode
     });
   }
 
@@ -79,10 +79,11 @@ export class DashboardComponent implements OnInit {
       
       const formValue = this.measurementForm.value;
       const isCompare = formValue.opType === 'compare';
+      const isConvert = formValue.opType === 'convert';
 
       const request: MeasurementRequest = {
         measurementCategory: formValue.measurementCategory,
-        operationType: isCompare ? 1 : Number(formValue.arithmeticOp),
+        operationType: isCompare ? 1 : (isConvert ? 0 : Number(formValue.arithmeticOp)),
         measurementUnit1: formValue.measurementUnit1,
         measurementValue1: formValue.measurementValue1,
         measurementUnit2: formValue.measurementUnit2,
@@ -90,7 +91,14 @@ export class DashboardComponent implements OnInit {
         targetMeasurementUnit: formValue.targetMeasurementUnit
       };
 
-      const call = isCompare ? this.service.compare(request) : this.service.calculate(request);
+      let call;
+      if (isCompare) {
+        call = this.service.compare(request);
+      } else if (isConvert) {
+        call = this.service.convert(request);
+      } else {
+        call = this.service.calculate(request);
+      }
 
       call.subscribe({
         next: (resp: any) => {

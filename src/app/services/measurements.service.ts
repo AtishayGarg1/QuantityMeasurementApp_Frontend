@@ -13,9 +13,11 @@ export class MeasurementsService {
   constructor(private http: HttpClient, private authService: AuthService) { }
 
   private getHeaders(): HttpHeaders {
-    const token = this.authService.getToken();
+    let token = this.authService.getToken();
     let headers = new HttpHeaders();
     if (token) {
+      // Robustly strip any leading/trailing quotes that might have slipped into localStorage
+      token = token.replace(/^["'](.*)["']$/, '$1').trim();
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
     return headers;
@@ -31,6 +33,10 @@ export class MeasurementsService {
 
   compare(request: MeasurementRequest): Observable<MeasurementResponse> {
     return this.http.post<MeasurementResponse>(`${this.apiUrl}/compare`, request, { headers: this.getHeaders() });
+  }
+
+  convert(request: MeasurementRequest): Observable<MeasurementResponse> {
+    return this.http.post<MeasurementResponse>(`${this.apiUrl}/convert`, request, { headers: this.getHeaders() });
   }
 
   getHistory(): Observable<MeasurementRecord[]> {

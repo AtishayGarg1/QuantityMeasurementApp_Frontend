@@ -31,6 +31,10 @@ export class HistoryComponent implements OnInit {
     
     this.service.getHistory().subscribe({
       next: (response: any) => {
+        // Log raw response type for debugging
+        const respType = Array.isArray(response) ? 'Array' : typeof response;
+        let keysFound = 'none';
+
         // Handle potential wrapping in an object (e.g., { data: [...] } or { items: [...] })
         let data: any[] = [];
         if (Array.isArray(response)) {
@@ -42,6 +46,12 @@ export class HistoryComponent implements OnInit {
         } else if (response && Array.isArray(response.history)) {
           data = response.history;
         }
+
+        if (data && data.length > 0) {
+            keysFound = Object.keys(data[0]).join(', ');
+        }
+        
+        this.debugInfo = `Response: ${respType}, Count: ${data ? data.length : 0}, Keys: ${keysFound}`;
 
         this.history = data.map(record => ({
             ...record,

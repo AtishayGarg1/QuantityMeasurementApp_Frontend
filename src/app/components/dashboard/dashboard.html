@@ -18,16 +18,19 @@
 
       <div class="operation-selector">
         <label>
-          <input type="radio" formControlName="opType" value="calculate"> Calculate
+          <input type="radio" formControlName="opType" value="convert"> Conversion
         </label>
         <label>
-          <input type="radio" formControlName="opType" value="compare"> Comparison
+          <input type="radio" formControlName="opType" value="arithmetic"> Arithmetic
+        </label>
+        <label>
+          <input type="radio" formControlName="opType" value="compare"> Compare
         </label>
       </div>
 
 
-      <!-- Arithmetic Dropdown (Visible for Calculate) -->
-      <div class="input-group full-width" *ngIf="measurementForm.get('opType')?.value === 'calculate'">
+      <!-- Arithmetic Dropdown (Visible for Arithmetic) -->
+      <div class="input-group full-width" *ngIf="measurementForm.get('opType')?.value === 'arithmetic'">
         <label>Specific Operation</label>
         <select formControlName="arithmeticOp" class="op-select">
           <option *ngFor="let op of arithmeticOps" [value]="op.value">{{op.label}}</option>
@@ -47,14 +50,12 @@
           </select>
         </div>
 
-        <div class="input-group">
+        <div class="input-group" *ngIf="measurementForm.get('opType')?.value !== 'convert'">
           <label>Second Value</label>
           <input type="number" formControlName="measurementValue2" placeholder="0.00">
-          <small *ngIf="measurementForm.get('opType')?.value === 'calculate'"
-            style="font-size: 10px; opacity: 0.6; color: var(--secondary)">Set to 0 for simple conversion</small>
         </div>
 
-        <div class="input-group">
+        <div class="input-group" *ngIf="measurementForm.get('opType')?.value !== 'convert'">
           <label>Unit 2</label>
           <select formControlName="measurementUnit2" class="unit-select">
             <option *ngFor="let unit of availableUnits" [value]="unit">{{unit}}</option>
@@ -78,7 +79,7 @@
       <!-- RESULT -->
       <div class="result-display fade-in" *ngIf="result">
         <h3>Result</h3>
-        <div *ngIf="measurementForm.get('opType')?.value === 'calculate'">
+        <div *ngIf="measurementForm.get('opType')?.value !== 'compare'">
           <div class="result-number">{{result.calculatedValue}}</div>
           <div class="result-unit" style="color: #fb7185">{{measurementForm.get('targetMeasurementUnit')?.value}}</div>
         </div>
