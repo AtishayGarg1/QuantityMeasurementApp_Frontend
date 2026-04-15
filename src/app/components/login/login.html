@@ -1,0 +1,38 @@
+<div class="auth-container">
+  <div class="glass-card fade-in">
+    <a routerLink="/dashboard" class="back-link">&#8592; Back</a>
+    <h1>Welcome Back</h1>
+    <p class="link-text" style="text-align: left; margin-top: -16px; margin-bottom: 32px">Login to your Quantity Measurement account</p>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="input-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" formControlName="email" placeholder="you@example.com" autocomplete="email">
+        <div class="error-message" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['email']">
+          Please enter a valid email address.
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" formControlName="password" placeholder="••••••••">
+        <div class="error-message" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.errors?.['minlength']">
+          Password must be at least 6 characters long.
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="loginForm.invalid || loading">
+        <span *ngIf="!loading">Login</span>
+        <span *ngIf="loading">Authenticating...</span>
+      </button>
+
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+    </form>
+
+    <p class="link-text">
+      Don't have an account? <a routerLink="/register">Sign Up</a>
+    </p>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<div class="auth-container">
+  <div class="glass-card fade-in">
+    <a routerLink="/dashboard" class="back-link">&#8592; Back</a>
+    <h1>Create Account</h1>
+    <p class="link-text" style="text-align: left; margin-top: -16px; margin-bottom: 32px">Start your measurement journey today</p>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="input-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" formControlName="email" placeholder="you@example.com" autocomplete="email">
+        <div class="error-message" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.errors?.['email']">
+          Please enter a valid email address.
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" formControlName="password" placeholder="e.g. Password@123">
+        <div class="error-message" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['minlength']">
+          Password must be at least 6 characters long.
+        </div>
+        <p class="link-text" style="text-align: left; margin-top: 4px; font-size: 11px;">
+            Hint: Use uppercase, lowercase, numbers, and symbols.
+        </p>
+      </div>
+
+      <div class="input-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" formControlName="confirmPassword" placeholder="••••••••">
+        <div class="error-message" *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.hasError('mismatch')">
+          Passwords do not match.
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="registerForm.invalid || loading">
+        <span *ngIf="!loading">Sign Up</span>
+        <span *ngIf="loading">Creating account...</span>
+      </button>
+
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <div class="success-message" *ngIf="successMessage">
+        {{ successMessage }}
+      </div>
+    </form>
+
+    <p class="link-text">
+      Already have an account? <a routerLink="/login">Login</a>
+    </p>
+  </div>
+</div>
