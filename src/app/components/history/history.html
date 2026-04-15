@@ -20,6 +20,10 @@
       <p>⚠️ {{ errorMessage }}</p>
     </div>
 
+    <div class="debug-panel" *ngIf="debugInfo" style="padding: 10px; font-size: 0.8em; color: #666; border-top: 1px solid #eee;">
+      <small>Debug Info: {{ debugInfo }}</small>
+    </div>
+
     <div class="table-container" *ngIf="!loading && history.length > 0">
       <table>
         <thead>

@@ -15,6 +15,7 @@ export class HistoryComponent implements OnInit {
   history: any[] = []; // Use any to be safe with casing from backend
   loading: boolean = false;
   errorMessage: string = '';
+  debugInfo: string = '';
 
   constructor(private service: MeasurementsService) {}
 
@@ -25,6 +26,9 @@ export class HistoryComponent implements OnInit {
   loadHistory(): void {
     this.loading = true;
     this.errorMessage = '';
+    const hasToken = !!localStorage.getItem('token');
+    this.debugInfo = `Starting history load. Token present: ${hasToken}.`;
+    
     this.service.getHistory().subscribe({
       next: (response: any) => {
         // Handle potential wrapping in an object (e.g., { data: [...] } or { items: [...] })
@@ -54,9 +58,11 @@ export class HistoryComponent implements OnInit {
             areEqual: record.areEqual ?? record.AreEqual,
             timestamp: record.timestamp ?? record.Timestamp ?? record.createdAt ?? record.CreatedAt
         }));
+        this.debugInfo = `Successfully loaded ${this.history.length} records.`;
         this.loading = false;
       },
       error: (err) => {
+        this.debugInfo = `Error: ${err.message || 'Unknown object error'}. Status: ${err.status}.`;
         if (err.status === 401) {
           this.errorMessage = 'Session expired or not logged in. Please log in again.';
         } else if (err.status === 0) {

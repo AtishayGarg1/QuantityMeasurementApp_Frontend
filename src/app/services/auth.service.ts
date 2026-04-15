@@ -14,8 +14,9 @@ export class AuthService {
   login(credentials: any): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response: any) => {
-        const token = response.token || response.Token;
-        if (token) {
+        let token = response.token || response.Token;
+        if (token && typeof token === 'string') {
+          token = token.replace(/^"(.*)"$/, '$1').trim();
           localStorage.setItem('token', token);
         }
       })
